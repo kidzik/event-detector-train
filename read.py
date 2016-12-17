@@ -7,10 +7,8 @@ import btk
 import re
 import os
 
+input_dir = "/home/kidzik/Dropbox/tempdeid/"
 output_dir = "csv"
-
-leg = "L"
-filename = "c3d/223000 20.c3d"
 
 def extract_kinematics(leg, filename):
     # Open c3d and read data
@@ -50,6 +48,8 @@ def extract_kinematics(leg, filename):
 
     # Add events as output
     for event in btk.Iterate(acq.GetEvents()):
+        if event.GetFrame() >= nframes:
+            return
         if event.GetContext()[0] == leg:
             if event.GetLabel() == "Foot Strike":
                 outputs[event.GetFrame(), 0] = 1
@@ -62,12 +62,12 @@ def extract_kinematics(leg, filename):
 
     arr = np.concatenate((curves, outputs), axis=1)
 
-    m = re.match("c3d/(?P<name>.+).c3d",filename)
+    m = re.match(input_dir + "(?P<name>.+).c3d",filename)
     name = m.group('name').replace(" ","-")
     np.savetxt("%s/%s%s.csv" % (output_dir, leg, name), arr, delimiter=',')
 
 # Extract kinematics from all *.c3d files in c3d directory
-files = os.listdir("c3d")
+files = os.listdir(input_dir)
 for filename in files:
     for leg in ['L','R']:
-        extract_kinematics(leg, "c3d/" + filename)
+        extract_kinematics(leg, input_dir + filename)
