@@ -1,0 +1,1326 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass{article}
+
+    
+    
+    \usepackage{graphicx} % Used to insert images
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{color} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    
+
+    
+    
+    \definecolor{orange}{cmyk}{0,0.4,0.8,0.2}
+    \definecolor{darkorange}{rgb}{.71,0.21,0.01}
+    \definecolor{darkgreen}{rgb}{.12,.54,.11}
+    \definecolor{myteal}{rgb}{.26, .44, .56}
+    \definecolor{gray}{gray}{0.45}
+    \definecolor{lightgray}{gray}{.95}
+    \definecolor{mediumgray}{gray}{.8}
+    \definecolor{inputbackground}{rgb}{.95, .95, .85}
+    \definecolor{outputbackground}{rgb}{.95, .95, .95}
+    \definecolor{traceback}{rgb}{1, .95, .95}
+    % ansi colors
+    \definecolor{red}{rgb}{.6,0,0}
+    \definecolor{green}{rgb}{0,.65,0}
+    \definecolor{brown}{rgb}{0.6,0.6,0}
+    \definecolor{blue}{rgb}{0,.145,.698}
+    \definecolor{purple}{rgb}{.698,.145,.698}
+    \definecolor{cyan}{rgb}{0,.698,.698}
+    \definecolor{lightgray}{gray}{0.5}
+    
+    % bright ansi colors
+    \definecolor{darkgray}{gray}{0.25}
+    \definecolor{lightred}{rgb}{1.0,0.39,0.28}
+    \definecolor{lightgreen}{rgb}{0.48,0.99,0.0}
+    \definecolor{lightblue}{rgb}{0.53,0.81,0.92}
+    \definecolor{lightpurple}{rgb}{0.87,0.63,0.87}
+    \definecolor{lightcyan}{rgb}{0.5,1.0,0.83}
+    
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{Identification of gait events from kinematics using LSTM networks}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=blue,
+      linkcolor=darkorange,
+      citecolor=darkgreen,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    Load packages
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}76}]:} \PY{k+kn}{import} \PY{n+nn}{os}
+         \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k+kn}{as} \PY{n+nn}{np}
+         \PY{k+kn}{import} \PY{n+nn}{math}
+         \PY{k+kn}{import} \PY{n+nn}{keras.backend} \PY{k+kn}{as} \PY{n+nn}{K}
+         \PY{k+kn}{import} \PY{n+nn}{matplotlib.pyplot} \PY{k+kn}{as} \PY{n+nn}{plt}
+         
+         \PY{k+kn}{from} \PY{n+nn}{scipy.ndimage.filters} \PY{k+kn}{import} \PY{n}{gaussian\PYZus{}filter}
+         \PY{k+kn}{from} \PY{n+nn}{keras.models} \PY{k+kn}{import} \PY{n}{Sequential}
+         \PY{k+kn}{from} \PY{n+nn}{keras.layers} \PY{k+kn}{import} \PY{n}{Dense}
+         \PY{k+kn}{from} \PY{n+nn}{keras.layers} \PY{k+kn}{import} \PY{n}{LSTM}\PY{p}{,} \PY{n}{TimeDistributed}
+         \PY{k+kn}{from} \PY{n+nn}{sklearn.preprocessing} \PY{k+kn}{import} \PY{n}{MinMaxScaler}
+         \PY{k+kn}{from} \PY{n+nn}{sklearn.metrics} \PY{k+kn}{import} \PY{n}{mean\PYZus{}squared\PYZus{}error}
+         \PY{k+kn}{from} \PY{n+nn}{itertools} \PY{k+kn}{import} \PY{n}{product}
+         \PY{k+kn}{from} \PY{n+nn}{random} \PY{k+kn}{import} \PY{n}{randint}
+         \PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k+kn}{import} \PY{n}{signal}
+         \PY{k+kn}{from} \PY{n+nn}{peakdet} \PY{k+kn}{import} \PY{n}{peakdet}
+\end{Verbatim}
+
+    For each trial per leg \(r\) we have \(n_r\) sampling points of \(15\)
+joint angles (\(5\) joints, \(3\) DOF). Input observations are stored as
+matrices \(X_r \in \mathbb{R}^{n_r \times 15}\). For each trial we have
+some of the events (foot strike / toes off) annotated. Let's focus on
+the foot strike event. We encode these events as a binary vector
+\(Y_r \in \{ 0, 1\}^{n_r}\). The task is to predict these events.
+
+For training the network we will use fixed length sequences. We set the
+length to \texttt{nseqlen} and use only samples from the first event
+\texttt{nstart\ -\ nrand} where \texttt{nstart} is the first nonzero
+element in \(Y_r\) and \texttt{nrand} is a random integer between
+\texttt{nseqlen\ /\ 2}. We do this subtraction in order to simulate
+starting from different points - to make the procedure robust to various
+setups.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{c}{\PYZsh{} Settings}
+        \PY{n}{fdir} \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{csv}\PY{l+s}{\PYZdq{}}
+        \PY{n}{files} \PY{o}{=} \PY{n}{os}\PY{o}{.}\PY{n}{listdir}\PY{p}{(}\PY{n}{fdir}\PY{p}{)}
+        \PY{n}{input\PYZus{}dim} \PY{o}{=} \PY{l+m+mi}{15}
+        \PY{n}{output\PYZus{}dim} \PY{o}{=} \PY{l+m+mi}{1}
+        
+        \PY{n}{nseqlen} \PY{o}{=} \PY{l+m+mi}{128}
+        
+        \PY{c}{\PYZsh{} Merge inputs from different files together}
+        \PY{n}{inputs} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{files}\PY{p}{)}\PY{p}{,} \PY{n}{nseqlen}\PY{p}{,} \PY{n}{input\PYZus{}dim}\PY{p}{)}\PY{p}{)}
+        \PY{n}{outputs} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{files}\PY{p}{)}\PY{p}{,} \PY{n}{nseqlen}\PY{p}{,} \PY{n}{output\PYZus{}dim}\PY{p}{)}\PY{p}{)}
+        
+        \PY{n}{n} \PY{o}{=} \PY{l+m+mi}{0}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{k}{for} \PY{n}{i}\PY{p}{,}\PY{n}{filename} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{files}\PY{p}{)}\PY{p}{:}
+            \PY{c}{\PYZsh{} print(\PYZdq{}Processing \PYZpc{}s...\PYZdq{} \PYZpc{} (filename,))}
+            \PY{n}{R} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{loadtxt}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s+si}{\PYZpc{}s}\PY{l+s}{/}\PY{l+s+si}{\PYZpc{}s}\PY{l+s}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{fdir}\PY{p}{,} \PY{n}{filename}\PY{p}{)}\PY{p}{,} \PY{n}{delimiter}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{,}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+        
+            \PY{c}{\PYZsh{} find first event}
+            \PY{n}{positives} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{where}\PY{p}{(}\PY{n}{R}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{input\PYZus{}dim}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mf}{0.5}\PY{p}{)}
+            \PY{k}{if} \PY{n+nb}{len}\PY{p}{(}\PY{n}{positives}\PY{p}{)} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+                \PY{k}{continue}
+            \PY{n}{nstart} \PY{o}{=} \PY{n}{positives}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+            \PY{n}{nstart} \PY{o}{=} \PY{n}{nstart} \PY{o}{\PYZhy{}} \PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{nseqlen} \PY{o}{/} \PY{l+m+mi}{2}\PY{p}{)}
+        
+            \PY{k}{if} \PY{n}{R}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{p}{(}\PY{n}{nstart} \PY{o}{+} \PY{n}{nseqlen}\PY{p}{)}\PY{p}{:}
+                \PY{k}{continue}
+        
+            \PY{n}{X} \PY{o}{=} \PY{n}{R}\PY{p}{[}\PY{n}{nstart}\PY{p}{:}\PY{p}{(}\PY{n}{nstart} \PY{o}{+} \PY{n}{nseqlen}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{n}{input\PYZus{}dim}\PY{p}{]}
+            \PY{n}{Y} \PY{o}{=} \PY{n}{R}\PY{p}{[}\PY{n}{nstart}\PY{p}{:}\PY{p}{(}\PY{n}{nstart} \PY{o}{+} \PY{n}{nseqlen}\PY{p}{)}\PY{p}{,}\PY{n}{input\PYZus{}dim}\PY{p}{:}\PY{p}{(}\PY{n}{input\PYZus{}dim} \PY{o}{+} \PY{n}{output\PYZus{}dim}\PY{p}{)}\PY{p}{]}
+            
+            \PY{c}{\PYZsh{} Y = gaussian\PYZus{}filter(Y * 1.0, 1.0)}
+        
+            \PY{k}{if} \PY{p}{(}\PY{n+nb}{sum}\PY{p}{(}\PY{n}{Y}\PY{p}{)} \PY{o}{\PYZlt{}} \PY{l+m+mf}{0.01}\PY{p}{)}\PY{p}{:}
+                \PY{k}{continue}
+            
+            \PY{n}{inputs}\PY{p}{[}\PY{n}{n}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{X}
+            \PY{n}{outputs}\PY{p}{[}\PY{n}{n}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{Y}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{1}\PY{p}{]}
+            \PY{n}{n} \PY{o}{=} \PY{n}{n}\PY{o}{+}\PY{l+m+mi}{1}
+            
+            \PY{k}{if} \PY{n}{n} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mi}{1000}\PY{p}{:}
+                \PY{k}{break}
+\end{Verbatim}
+
+    Now \texttt{inputs} contains \(1000\) matrices
+\(X \in \mathbb{R}^{\verb|nseqlen| \times 15}\) and \texttt{outputs} are
+corresponding output vectors \(Y_r \in \{ 0, 1\}^{\verb|nseqlen|}\).
+
+Since we have an inbalanced output vector (events are sparse, i.e.~not
+many \texttt{1}'s in \(Y_r\)), we use a weighted binary crossentropy,
+penalazing \(100\) times more for misclassified \texttt{1}'s.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}71}]:} \PY{k}{def} \PY{n+nf}{weighted\PYZus{}binary\PYZus{}crossentropy}\PY{p}{(}\PY{n}{y\PYZus{}true}\PY{p}{,} \PY{n}{y\PYZus{}pred}\PY{p}{)}\PY{p}{:}
+             \PY{k}{return} \PY{n}{K}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{multiply}\PY{p}{(}\PY{n}{K}\PY{o}{.}\PY{n}{binary\PYZus{}crossentropy}\PY{p}{(}\PY{n}{y\PYZus{}pred}\PY{p}{,} \PY{n}{y\PYZus{}true}\PY{p}{)}\PY{p}{,}\PY{p}{(}\PY{n}{y\PYZus{}true} \PY{o}{+} \PY{l+m+mf}{0.01}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}
+\end{Verbatim}
+
+    We construct a neural network of the following architecture: * \(15\)
+dimensional time series as an input * LSTM layer mapping the input to a
+\(16\) dimensional time series * LSTM layer mapping the previous layer
+to \(1\) dimensional time series
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{c}{\PYZsh{} Build the model}
+        \PY{n}{nhidden} \PY{o}{=} \PY{l+m+mi}{16}
+        \PY{n}{model} \PY{o}{=} \PY{n}{Sequential}\PY{p}{(}\PY{p}{)}
+        \PY{n}{model}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{LSTM}\PY{p}{(}\PY{n}{input\PYZus{}shape} \PY{o}{=} \PY{p}{(}\PY{n}{input\PYZus{}dim}\PY{p}{,}\PY{p}{)}\PY{p}{,}\PY{n}{input\PYZus{}dim}\PY{o}{=}\PY{n}{input\PYZus{}dim}\PY{p}{,} \PY{n}{output\PYZus{}dim}\PY{o}{=}\PY{n}{nhidden}\PY{p}{,} \PY{n}{return\PYZus{}sequences}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{)}
+        \PY{c}{\PYZsh{}model.add(LSTM(output\PYZus{}dim = nhidden, return\PYZus{}sequences=True))}
+        \PY{n}{model}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{LSTM}\PY{p}{(}\PY{n}{output\PYZus{}dim} \PY{o}{=} \PY{n}{output\PYZus{}dim}\PY{p}{,} \PY{n}{return\PYZus{}sequences}\PY{o}{=}\PY{n+nb+bp}{True}\PY{p}{)}\PY{p}{)}
+        \PY{n}{model}\PY{o}{.}\PY{n}{add}\PY{p}{(}\PY{n}{TimeDistributed}\PY{p}{(}\PY{n}{Dense}\PY{p}{(}\PY{n}{output\PYZus{}dim}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{sigmoid}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+        \PY{n}{model}\PY{o}{.}\PY{n}{compile}\PY{p}{(}\PY{n}{loss}\PY{o}{=}\PY{n}{weighted\PYZus{}binary\PYZus{}crossentropy}\PY{p}{,} \PY{n}{optimizer}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{adam}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{metrics}\PY{o}{=}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{accuracy}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+
+    We train the model on \(90\%\) of the data. \(100\) epochs already give
+reasonable accuracy.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}81}]:} \PY{c}{\PYZsh{} Fit on the training set}
+         \PY{n}{ntrain} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{math}\PY{o}{.}\PY{n}{floor}\PY{p}{(}\PY{n}{n} \PY{o}{*} \PY{l+m+mf}{0.9}\PY{p}{)}\PY{p}{)}
+         \PY{n}{model}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{inputs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{:}\PY{n}{ntrain}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{,} \PY{n}{outputs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{:}\PY{n}{ntrain}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{,} \PY{n}{nb\PYZus{}epoch}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{32}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch 1/100
+900/900 [==============================] - 6s - loss: 0.0075 - acc: 0.8198     
+Epoch 2/100
+900/900 [==============================] - 6s - loss: 0.0076 - acc: 0.8058     
+Epoch 3/100
+900/900 [==============================] - 6s - loss: 0.0075 - acc: 0.8160     
+Epoch 4/100
+900/900 [==============================] - 6s - loss: 0.0075 - acc: 0.8179     
+Epoch 5/100
+900/900 [==============================] - 6s - loss: 0.0075 - acc: 0.8188     
+Epoch 6/100
+900/900 [==============================] - 6s - loss: 0.0075 - acc: 0.8180     
+Epoch 7/100
+900/900 [==============================] - 6s - loss: 0.0075 - acc: 0.8173     
+Epoch 8/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8198     
+Epoch 9/100
+900/900 [==============================] - 6s - loss: 0.0075 - acc: 0.8183     
+Epoch 10/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8191     
+Epoch 11/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8188     
+Epoch 12/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8181     
+Epoch 13/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8168     
+Epoch 14/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8185     
+Epoch 15/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8158     
+Epoch 16/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8182     
+Epoch 17/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8183     
+Epoch 18/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8191     
+Epoch 19/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8194     
+Epoch 20/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8209     
+Epoch 21/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8218     
+Epoch 22/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8136     
+Epoch 23/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8177     
+Epoch 24/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8192     
+Epoch 25/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8161     
+Epoch 26/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8191     
+Epoch 27/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8179     
+Epoch 28/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8212     
+Epoch 29/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8200     
+Epoch 30/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8154     
+Epoch 31/100
+900/900 [==============================] - 7s - loss: 0.0074 - acc: 0.8215     
+Epoch 32/100
+900/900 [==============================] - 6s - loss: 0.0074 - acc: 0.8180     
+Epoch 33/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8192     
+Epoch 34/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8207     
+Epoch 35/100
+900/900 [==============================] - 7s - loss: 0.0074 - acc: 0.8179     
+Epoch 36/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8232     
+Epoch 37/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8198     
+Epoch 38/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8254     
+Epoch 39/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8223     
+Epoch 40/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8204     
+Epoch 41/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8199     
+Epoch 42/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8209     
+Epoch 43/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8208     
+Epoch 44/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8202     
+Epoch 45/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8215     
+Epoch 46/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8248     
+Epoch 47/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8245     
+Epoch 48/100
+900/900 [==============================] - 6s - loss: 0.0072 - acc: 0.8253     
+Epoch 49/100
+900/900 [==============================] - 6s - loss: 0.0072 - acc: 0.8256     
+Epoch 50/100
+900/900 [==============================] - 6s - loss: 0.0072 - acc: 0.8247     
+Epoch 51/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8254     
+Epoch 52/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8215     
+Epoch 53/100
+900/900 [==============================] - 6s - loss: 0.0073 - acc: 0.8247     
+Epoch 54/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8227     
+Epoch 55/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8273     
+Epoch 56/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8236     
+Epoch 57/100
+900/900 [==============================] - 6s - loss: 0.0072 - acc: 0.8247     
+Epoch 58/100
+900/900 [==============================] - 6s - loss: 0.0072 - acc: 0.8253     
+Epoch 59/100
+900/900 [==============================] - 6s - loss: 0.0072 - acc: 0.8237     
+Epoch 60/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8259     
+Epoch 61/100
+900/900 [==============================] - 6s - loss: 0.0072 - acc: 0.8282     
+Epoch 62/100
+900/900 [==============================] - 6s - loss: 0.0072 - acc: 0.8244     
+Epoch 63/100
+900/900 [==============================] - 6s - loss: 0.0072 - acc: 0.8249     
+Epoch 64/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8218     
+Epoch 65/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8260     
+Epoch 66/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8263     
+Epoch 67/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8290     
+Epoch 68/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8232     
+Epoch 69/100
+900/900 [==============================] - 6s - loss: 0.0072 - acc: 0.8231     
+Epoch 70/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8259     
+Epoch 71/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8282     
+Epoch 72/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8233     
+Epoch 73/100
+900/900 [==============================] - 7s - loss: 0.0073 - acc: 0.8200     
+Epoch 74/100
+900/900 [==============================] - 7s - loss: 0.0074 - acc: 0.8120     
+Epoch 75/100
+900/900 [==============================] - 7s - loss: 0.0073 - acc: 0.8173     
+Epoch 76/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8258     
+Epoch 77/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8225     
+Epoch 78/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8223     
+Epoch 79/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8232     
+Epoch 80/100
+900/900 [==============================] - 7s - loss: 0.0073 - acc: 0.8138     
+Epoch 81/100
+900/900 [==============================] - 7s - loss: 0.0073 - acc: 0.8198     
+Epoch 82/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8240     
+Epoch 83/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8248     
+Epoch 84/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8251     
+Epoch 85/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8260     
+Epoch 86/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8239     
+Epoch 87/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8250     
+Epoch 88/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8267     
+Epoch 89/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8220     
+Epoch 90/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8241     
+Epoch 91/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8258     
+Epoch 92/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8262     
+Epoch 93/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8274     
+Epoch 94/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8259     
+Epoch 95/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8290     
+Epoch 96/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8224     
+Epoch 97/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8212     
+Epoch 98/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8233     
+Epoch 99/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8244     
+Epoch 100/100
+900/900 [==============================] - 7s - loss: 0.0072 - acc: 0.8255
+    \end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}81}]:} <keras.callbacks.History at 0x7fbe3832b850>
+\end{Verbatim}
+        
+    The model outputs values which can be interpreted as likelihood of an
+event.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}100}]:} \PY{c}{\PYZsh{} Test on the test set}
+          \PY{n}{scores} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{evaluate}\PY{p}{(}\PY{n}{inputs}\PY{p}{[}\PY{n}{ntrain}\PY{p}{:}\PY{n}{n}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{,} \PY{n}{outputs}\PY{p}{[}\PY{n}{ntrain}\PY{p}{:}\PY{n}{n}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+          \PY{k}{print}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{Accuracy: }\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+si}{\PYZpc{}\PYZpc{}}\PY{l+s}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{scores}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{*}\PY{l+m+mi}{100}\PY{p}{)}\PY{p}{)}
+          
+          \PY{n}{res} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{inputs}\PY{p}{[}\PY{n}{ntrain}\PY{p}{:}\PY{n}{n}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+100/100 [==============================] - 0s     
+Accuracy: 82.36\%
+    \end{Verbatim}
+
+    Given the likelihoods we can approximate positions of peaks by finding
+local maxima. Below are some examples on the test set (still with
+fixed-length sequences). There is one plot per trail. Blue curve is the
+output of the neural network, grean peaks are the events, blue vertical
+lines are estimates of the events.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}107}]:} \PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+          \PY{k}{for} \PY{n}{ntrial} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{30}\PY{p}{)}\PY{p}{:}
+              \PY{n}{r} \PY{o}{=} \PY{n}{res}\PY{p}{[}\PY{n}{ntrial}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}
+              \PY{n}{peakind} \PY{o}{=} \PY{n}{peakdet}\PY{p}{(}\PY{n}{r}\PY{p}{,}\PY{l+m+mf}{0.5}\PY{p}{)}
+              \PY{k}{print}\PY{p}{(}\PY{n}{peakind}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+              \PY{k}{for} \PY{n}{k}\PY{p}{,}\PY{n}{v} \PY{o+ow}{in} \PY{n}{peakind}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{:}
+                  \PY{n}{plt}\PY{o}{.}\PY{n}{axvline}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n}{k}\PY{p}{)}
+              \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{res}\PY{p}{[}\PY{n}{ntrial}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+              \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{outputs}\PY{p}{[}\PY{n}{ntrain} \PY{o}{+} \PY{n}{ntrial}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+              \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 11.           0.73325509]
+ [ 99.           0.87966752]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[   1.            0.77505213]
+ [ 105.            0.87599438]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 35.           0.74579048]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_5.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 40.           0.84984177]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_7.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[   7.            0.87704635]
+ [ 108.            0.86685938]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_9.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 59.           0.85631019]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_11.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 42.           0.85154575]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_13.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 14.           0.89107317]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_15.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_17.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 52.           0.88776571]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_19.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 3.          0.88801736]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_21.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 20.           0.86588991]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_23.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 10.           0.87941593]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_25.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 5.          0.88047719]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_27.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 45.           0.85908449]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_29.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 3.          0.86629641]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_31.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 49.           0.80308467]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_33.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 53.           0.87343931]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_35.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 42.           0.88275474]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_37.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_39.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 41.           0.88741255]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_41.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 17.           0.89247572]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_43.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 51.           0.73546839]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_45.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[  12.            0.77820849]
+ [ 110.            0.77813494]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_47.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 9.         0.8936094]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_49.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 41.           0.85510027]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_51.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 44.          0.8853898]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_53.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 50.           0.86485183]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_55.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 23.           0.87837386]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_57.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[ 20.           0.82699734]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_14_59.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Now, we try prediction on variable length sequences. Note, that we have
+only few annotations per trial, while there should be more, in periodic
+manner. It seems it's caputred by LSTM.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}108}]:} \PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+          
+          \PY{k}{for} \PY{n}{i}\PY{p}{,}\PY{n}{filename} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{files}\PY{p}{)}\PY{p}{:}
+              \PY{c}{\PYZsh{} print(\PYZdq{}Processing \PYZpc{}s...\PYZdq{} \PYZpc{} (filename,))}
+              \PY{n}{R} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{loadtxt}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s+si}{\PYZpc{}s}\PY{l+s}{/}\PY{l+s+si}{\PYZpc{}s}\PY{l+s}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{fdir}\PY{p}{,} \PY{n}{filename}\PY{p}{)}\PY{p}{,} \PY{n}{delimiter}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{,}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+          
+              \PY{n}{X} \PY{o}{=} \PY{n}{R}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{n}{input\PYZus{}dim}\PY{p}{]}
+              \PY{n}{Y} \PY{o}{=} \PY{n}{R}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{input\PYZus{}dim}\PY{p}{:}\PY{p}{(}\PY{n}{input\PYZus{}dim} \PY{o}{+} \PY{n}{output\PYZus{}dim}\PY{p}{)}\PY{p}{]}
+              \PY{k}{print}\PY{p}{(}\PY{n}{X}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+              \PY{n}{r} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{X}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{15}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+              
+              \PY{n}{peakind} \PY{o}{=} \PY{n}{peakdet}\PY{p}{(}\PY{n}{r}\PY{p}{,}\PY{l+m+mf}{0.5}\PY{p}{)}
+              \PY{k}{print}\PY{p}{(}\PY{n}{peakind}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+              \PY{k}{for} \PY{n}{k}\PY{p}{,}\PY{n}{v} \PY{o+ow}{in} \PY{n}{peakind}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{:}
+                  \PY{n}{plt}\PY{o}{.}\PY{n}{axvline}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n}{k}\PY{p}{)}
+              \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{r}\PY{p}{)}
+              \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{Y}\PY{p}{)}
+              \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+              
+              \PY{k}{if} \PY{n}{i} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+m+mi}{30}\PY{p}{:}
+                  \PY{k}{break}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+(784, 15)
+[[ 7.          0.73821914]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(1008, 15)
+[[ 101.            0.85980266]
+ [ 228.            0.83608049]
+ [ 359.            0.83922511]
+ [ 478.            0.84080416]
+ [ 593.            0.82558638]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(1006, 15)
+[[  6.90000000e+01   6.57431960e-01]
+ [  2.80000000e+02   8.94922197e-01]
+ [  3.87000000e+02   8.72160614e-01]
+ [  4.84000000e+02   8.90356541e-01]
+ [  5.90000000e+02   8.80473316e-01]
+ [  6.88000000e+02   8.95394802e-01]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_5.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(1128, 15)
+[[  9.00000000e+01   8.96617472e-01]
+ [  2.28000000e+02   8.90251637e-01]
+ [  2.75000000e+02   8.51183712e-01]
+ [  3.34000000e+02   8.72651279e-01]
+ [  4.59000000e+02   8.60163987e-01]
+ [  5.30000000e+02   6.17219925e-01]
+ [  5.89000000e+02   8.96930814e-01]
+ [  6.86000000e+02   8.29716504e-01]
+ [  7.45000000e+02   6.50144815e-01]
+ [  8.19000000e+02   8.67831707e-01]
+ [  9.44000000e+02   8.73982370e-01]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_7.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(741, 15)
+[[ 129.            0.87635422]
+ [ 241.            0.87565768]
+ [ 357.            0.87612468]
+ [ 476.            0.88738668]
+ [ 596.            0.88426358]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_9.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(466, 15)
+[[  38.            0.88131082]
+ [ 132.            0.88083249]
+ [ 213.            0.88140649]
+ [ 299.            0.88246125]
+ [ 390.            0.8905589 ]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_11.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(1420, 15)
+[[  1.62000000e+02   8.93477440e-01]
+ [  3.74000000e+02   8.93896937e-01]
+ [  5.97000000e+02   8.78934324e-01]
+ [  7.99000000e+02   8.88252616e-01]
+ [  1.03200000e+03   8.88963699e-01]
+ [  1.24900000e+03   8.88669133e-01]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_13.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(502, 15)
+[[  97.            0.86796802]
+ [ 231.            0.87292296]
+ [ 366.            0.87803835]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_15.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(494, 15)
+[[   3.            0.84187293]
+ [ 108.            0.85493815]
+ [ 207.            0.85969824]
+ [ 317.            0.85476124]
+ [ 435.            0.86013883]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_17.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(658, 15)
+[[ 115.            0.88187671]
+ [ 252.            0.88118666]
+ [ 390.            0.88561249]
+ [ 522.            0.88157302]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_19.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(574, 15)
+[[ 172.            0.88228184]
+ [ 276.            0.87475699]
+ [ 381.            0.88212764]
+ [ 471.            0.8681308 ]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_21.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(866, 15)
+[[   3.            0.62856692]
+ [  33.            0.87033027]
+ [ 136.            0.86268729]
+ [ 236.            0.86000609]
+ [ 333.            0.87148809]
+ [ 429.            0.87705606]
+ [ 520.            0.85678852]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_23.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(638, 15)
+[[  93.            0.83401203]
+ [ 197.            0.86738634]
+ [ 305.            0.82635581]
+ [ 411.            0.85176176]
+ [ 511.            0.85003233]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_25.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(583, 15)
+[[  36.            0.90185678]
+ [  75.            0.87798834]
+ [ 210.            0.88656217]
+ [ 358.            0.89496273]
+ [ 479.            0.88560992]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_27.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(603, 15)
+[[ 182.            0.84154522]
+ [ 270.            0.873909  ]
+ [ 360.            0.8601315 ]
+ [ 448.            0.7591964 ]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_29.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(588, 15)
+[[  91.            0.88284177]
+ [ 211.            0.8842575 ]
+ [ 325.            0.82613963]
+ [ 446.            0.85355049]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_31.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(678, 15)
+[[ 217.            0.88260555]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_33.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(601, 15)
+[[  39.            0.59427243]
+ [ 148.            0.83379054]
+ [ 267.            0.85265988]
+ [ 376.            0.87622553]
+ [ 486.            0.87509072]
+ [ 588.            0.84859836]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_35.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(2263, 15)
+[[  7.50000000e+01   8.92023504e-01]
+ [  2.93000000e+02   8.94766271e-01]
+ [  5.80000000e+02   8.78109872e-01]
+ [  7.81000000e+02   8.85005891e-01]
+ [  1.60700000e+03   8.97650659e-01]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_37.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(654, 15)
+[[  68.            0.88213861]
+ [ 163.            0.87511176]
+ [ 259.            0.87523723]
+ [ 351.            0.86435103]
+ [ 448.            0.87868875]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_39.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(743, 15)
+[[   6.            0.90290493]
+ [ 122.            0.83999228]
+ [ 217.            0.86703074]
+ [ 308.            0.82196862]
+ [ 408.            0.84596473]
+ [ 505.            0.88050622]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_41.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(934, 15)
+[[  5.30000000e+01   6.53670847e-01]
+ [  2.52000000e+02   7.26828039e-01]
+ [  8.30000000e+02   7.88702726e-01]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_43.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(686, 15)
+[[   2.            0.83063757]
+ [ 121.            0.81805885]
+ [ 236.            0.84696591]
+ [ 356.            0.84737581]
+ [ 470.            0.87489092]
+ [ 599.            0.85037404]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_45.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(471, 15)
+[[ 112.            0.85568744]
+ [ 239.            0.86186165]
+ [ 366.            0.86554778]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_47.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(1060, 15)
+[[  7.70000000e+01   7.15399086e-01]
+ [  2.64000000e+02   8.42358112e-01]
+ [  4.77000000e+02   8.42139423e-01]
+ [  8.16000000e+02   8.43587756e-01]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_49.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(666, 15)
+[[   1.            0.77345335]
+ [ 103.            0.88031667]
+ [ 203.            0.88334292]
+ [ 416.            0.84790009]
+ [ 514.            0.80755192]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_51.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(868, 15)
+[[ 164.            0.84411484]
+ [ 277.            0.84228319]
+ [ 524.            0.87474328]
+ [ 645.            0.84446228]
+ [ 755.            0.88556784]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_53.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(959, 15)
+[[ 143.            0.85494006]
+ [ 271.            0.85272491]
+ [ 398.            0.85597169]
+ [ 533.            0.85843509]
+ [ 680.            0.86109185]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_55.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(701, 15)
+[[  2.50000000e+01   8.77829790e-01]
+ [  1.47000000e+02   8.80076349e-01]
+ [  2.67000000e+02   8.80602896e-01]
+ [  3.83000000e+02   8.82732332e-01]
+ [  5.06000000e+02   8.80552292e-01]
+ [  6.22000000e+02   8.80353987e-01]
+ [  6.86000000e+02   6.40083611e-01]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_57.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(775, 15)
+[[ 253.            0.88236082]
+ [ 606.            0.88863474]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_59.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(526, 15)
+[[  33.            0.86828822]
+ [ 130.            0.86735219]
+ [ 223.            0.86228186]
+ [ 322.            0.8864283 ]
+ [ 434.            0.87064385]]
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Identification_files/Identification_16_61.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

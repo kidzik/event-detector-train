@@ -3,3 +3,9 @@ csv
 *.c3d
 *~
 *.pyc
+
+*.pdf
+*.out
+*.log
+*.aux
+.ipynb*

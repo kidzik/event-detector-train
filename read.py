@@ -7,7 +7,7 @@ import btk
 import re
 import os
 
-input_dir = "/home/kidzik/Dropbox/tempdeid/"
+input_dir = "/home/lukasz/Dropbox/tempdeid/"
 output_dir = "csv"
 
 def extract_kinematics(leg, filename):
@@ -17,6 +17,10 @@ def extract_kinematics(leg, filename):
     reader.Update()
     acq = reader.GetOutput()
     nframes = acq.GetPointFrameNumber()
+
+    metadata = acq.GetMetaData()
+
+    rate= int(metadata.FindChild('POINT').value().FindChild('RATE').value().GetInfo().ToDouble()[0])
 
     # We extract only kinematics
     kinematics = ["HipAngles", "KneeAngles", "AnkleAngles", "PelvisAngles", "FootProgressAngles"]
@@ -64,7 +68,7 @@ def extract_kinematics(leg, filename):
 
     m = re.match(input_dir + "(?P<name>.+).c3d",filename)
     name = m.group('name').replace(" ","-")
-    np.savetxt("%s/%s%s.csv" % (output_dir, leg, name), arr, delimiter=',')
+    np.savetxt("%s/%s%s-%d.csv" % (output_dir, leg, name, rate), arr, delimiter=',')
 
 # Extract kinematics from all *.c3d files in c3d directory
 files = os.listdir(input_dir)
