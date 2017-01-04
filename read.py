@@ -20,7 +20,7 @@ def extract_kinematics(leg, filename):
 
     metadata = acq.GetMetaData()
 
-    rate= int(metadata.FindChild('POINT').value().FindChild('RATE').value().GetInfo().ToDouble()[0])
+    rate = int(metadata.FindChild('POINT').value().FindChild('RATE').value().GetInfo().ToDouble()[0])
 
     # We extract only kinematics
     kinematics = ["HipAngles", "KneeAngles", "AnkleAngles", "PelvisAngles", "FootProgressAngles"]
@@ -68,7 +68,7 @@ def extract_kinematics(leg, filename):
 
     m = re.match(input_dir + "(?P<name>.+).c3d",filename)
     name = m.group('name').replace(" ","-")
-    np.savetxt("%s/%s%s-%d.csv" % (output_dir, leg, name, rate), arr, delimiter=',')
+    np.savetxt("%s/%s%s.csv" % (output_dir, leg, name), arr, delimiter=',')
 
 # Extract kinematics from all *.c3d files in c3d directory
 files = os.listdir(input_dir)
