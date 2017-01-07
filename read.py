@@ -23,7 +23,7 @@ def extract_kinematics(leg, filename):
     rate = int(metadata.FindChild('POINT').value().FindChild('RATE').value().GetInfo().ToDouble()[0])
 
     # We extract only kinematics
-    kinematics = ["HipAngles", "KneeAngles", "AnkleAngles", "PelvisAngles", "FootProgressAngles"]
+    kinematics = ["HipAngles", "KneeAngles", "AnkleAngles", "PelvisAngles", "FootProgressAngles", "ANK", "TOE", "KNE", "ASI"]
 
     outputs = np.array([[0] * nframes, [0] * nframes]).T
     
