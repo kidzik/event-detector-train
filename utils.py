@@ -230,7 +230,7 @@ def plot_kinematics(filename, ids = None, fromfile=False, input_dim = 15, output
         ax.plot(X[:,i])
         ax.set_xlim([0,X.shape[0]])
         for x in np.where(Y[:,0] > 0.5)[0]:
-            plt.axvline(x=x)
+            plt.axvline(x=x, color='g', linewidth=2)
 #        for x in np.where(Y[:,1] > 0.5)[0]:
 #            plt.axvline(x=x,color="r")
 
