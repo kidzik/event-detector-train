@@ -208,7 +208,7 @@ def plot_stats(sdist):
     print("<= 60: %f" % (len(ok60) / float(nel)))
     print("Mean distance: %f" % (np.mean(filtered)))
  
-def plot_kinematics(filename, ids = None, fromfile=False, input_dim = 15, output_dim = 15):
+def plot_kinematics(filename, fdir="", ids = None, fromfile=False, input_dim = 15, output_dim = 15):
     if not fromfile:
         ntrial = ids.index(filename)
         X = inputs[ntrial,:,0:input_dim]

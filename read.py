@@ -7,16 +7,23 @@ import btk
 import re
 import os
 
-input_dir = "/home/lukasz/Dropbox/tempdeid/"
+input_dir = "/home/lukasz/Dropbox/tempdeidNEW/"
 output_dir = "csv"
 
 def extract_kinematics(leg, filename):
+    m = re.match(input_dir + "(?P<name>.+).c3d",filename)
+    name = m.group('name').replace(" ","-")
+    output_file = "%s/%s%s.csv" % (output_dir, leg, name)
+
     # Open c3d and read data
     reader = btk.btkAcquisitionFileReader() 
     reader.SetFilename(filename)
     reader.Update()
     acq = reader.GetOutput()
     nframes = acq.GetPointFrameNumber()
+
+    if not os.path.isfile(output_file):
+        return
 
     metadata = acq.GetMetaData()
 
@@ -54,6 +61,8 @@ def extract_kinematics(leg, filename):
     for event in btk.Iterate(acq.GetEvents()):
         if event.GetFrame() >= nframes:
             return
+        if len(event.GetContext()) == 0:
+            return
         if event.GetContext()[0] == leg:
             if event.GetLabel() == "Foot Strike":
                 outputs[event.GetFrame(), 0] = 1
@@ -66,9 +75,7 @@ def extract_kinematics(leg, filename):
 
     arr = np.concatenate((curves, outputs), axis=1)
 
-    m = re.match(input_dir + "(?P<name>.+).c3d",filename)
-    name = m.group('name').replace(" ","-")
-    np.savetxt("%s/%s%s.csv" % (output_dir, leg, name), arr, delimiter=',')
+    np.savetxt(output_file, arr, delimiter=',')
 
 # Extract kinematics from all *.c3d files in c3d directory
 files = os.listdir(input_dir)
