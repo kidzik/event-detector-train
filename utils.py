@@ -21,8 +21,9 @@ import sys
 from numpy import NaN, Inf, arange, isscalar, asarray, array
 
 def weighted_binary_crossentropy(y_true, y_pred):
-    a1 = K.mean(np.multiply(K.binary_crossentropy(y_pred[0:1,:], y_true[0:1,:]),(y_true[0:1,:] + 0.01)), axis=-1)
-    a2 = K.mean(np.multiply(K.binary_crossentropy(y_pred[1:2,:], y_true[1:2,:]),(y_true[1:2,:] + 0.01)), axis=-1)
+#    a1 = K.mean(np.multiply(K.binary_crossentropy(y_pred[0:1,:], y_true[0:1,:]),(y_true[0:1,:] + 0.01)), axis=-1)
+#    a2 = K.mean(np.multiply(K.binary_crossentropy(y_pred[1:2,:], y_true[1:2,:]),(y_true[1:2,:] + 0.01)), axis=-1)
+    a1 = K.mean(np.multiply(K.binary_crossentropy(y_pred, y_true),(y_true + 0.01)), axis=-1)
     return a1 #+ a2
 
 # Build the model
