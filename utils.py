@@ -41,7 +41,7 @@ def plot_history(history):
     plt.plot(range(nepoch),history.history['loss'],'r')
     plt.plot(range(nepoch),history.history['val_loss'],'b')
     axes = plt.gca()
-    axes.set_ylim([0.0055,0.015])
+    axes.set_ylim([0.003,0.013])
     plt.title('model loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
@@ -209,7 +209,7 @@ def plot_stats(sdist):
     print("<= 60: %f" % (len(ok60) / float(nel)))
     print("Mean distance: %f" % (np.mean(filtered)))
  
-def plot_kinematics(filename, fdir="", ids = None, fromfile=False, input_dim = 15, output_dim = 15):
+def plot_kinematics(filename, fdir="", ids = None, fromfile=False, input_dim = 15, output_dim = 15, model = None):
     if not fromfile:
         ntrial = ids.index(filename)
         X = inputs[ntrial,:,0:input_dim]
