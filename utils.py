@@ -131,7 +131,10 @@ def load_data(fdir, input_dim, output_dim, nseqlen, nsamples = 100000):
     n = 0
     for i,filename in enumerate(files):
         # print("Processing %s..." % (filename,))
-        R = np.loadtxt("%s/%s" % (fdir, filename), delimiter=',')
+        try:
+            R = np.loadtxt("%s/%s" % (fdir, filename), delimiter=',')
+        except:
+            continue
 
         # find first event
         positives1 = np.where(R[:,input_dim] > 0.5)
@@ -139,7 +142,7 @@ def load_data(fdir, input_dim, output_dim, nseqlen, nsamples = 100000):
         if len(positives1) + len(positives2) == 0:
             continue
         nstart = max(positives1[0][0], positives2[0][0])
-        nstart = nstart - randint(0,nseqlen / 2)
+        nstart = nstart - randint(15,nseqlen / 2)
 
         if R.shape[0] < (nstart + nseqlen):
             continue
@@ -171,14 +174,14 @@ def peak_cmp(annotated, predicted):
         dist += min(np.abs(predicted - a))
     return dist / float(len(annotated))
 
-def eval_prediction(likelihood, true, patient, plot = True):
+def eval_prediction(likelihood, true, patient, plot = True, shift = 0):
     sdist = []
     
     peakind = peakdet(likelihood[:,0],0.5)
     for k,v in peakind[0]:
         if plot:
             plt.axvline(x=k)
-    sdist.append(peak_cmp(np.where(true[:,0] > 0.5)[0], [k for k,v in peakind[0]]))
+    sdist.append(peak_cmp(np.where(true[:,0] > 0.5)[0], [k + shift for k,v in peakind[0]]))
         
 #    peakind = peakdet(likelihood[:,1],0.5)
 #    for k,v in peakind[0]:
