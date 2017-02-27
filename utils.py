@@ -31,7 +31,7 @@ def construct_model(hidden = 32, lstm_layers = 2, input_dim = 15, output_dim = 2
     model = Sequential()
     model.add(LSTM(input_shape = (input_dim,),input_dim=input_dim, output_dim=hidden, return_sequences=True))
     for i in range(lstm_layers-1):
-        model.add(LSTM(output_dim = hidden, return_sequences=True))
+        model.add(LSTM(output_dim = hidden / 2**i, return_sequences=True))
     model.add(TimeDistributed(Dense(output_dim, activation='sigmoid')))
     model.compile(loss=weighted_binary_crossentropy, optimizer='adam', metrics=['accuracy'])
     return model
@@ -41,7 +41,7 @@ def plot_history(history):
     plt.plot(range(nepoch),history.history['loss'],'r')
     plt.plot(range(nepoch),history.history['val_loss'],'b')
     axes = plt.gca()
-    axes.set_ylim([0.003,0.013])
+    axes.set_ylim([0.0015,0.005])
     plt.title('model loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
@@ -166,13 +166,15 @@ def load_data(fdir, input_dim, output_dim, nseqlen, nsamples = 100000):
     return inputs[0:n,:,:], outputs[0:n,:,:], ids
 
 def peak_cmp(annotated, predicted):
-    dist = 0
+    dist = []
     if len(predicted) == 0 or len(annotated) == 0:
         return -1
     
     for a in annotated:
-        dist += min(np.abs(predicted - a))
-    return dist / float(len(annotated))
+        if a > 122:
+            continue
+        dist = dist + [min(np.abs(predicted - a))]
+    return mean(dist)
 
 def eval_prediction(likelihood, true, patient, plot = True, shift = 0):
     sdist = []
@@ -212,14 +214,14 @@ def plot_stats(sdist):
     print("<= 60: %f" % (len(ok60) / float(nel)))
     print("Mean distance: %f" % (np.mean(filtered)))
  
-def plot_kinematics(filename, fdir="", ids = None, fromfile=False, input_dim = 15, output_dim = 15, model = None):
+def plot_kinematics(filename, fdir="", ids = None, fromfile=False, input_dim = 15, output_dim = 15, model = None, cols = cols):
     if not fromfile:
         ntrial = ids.index(filename)
-        X = inputs[ntrial,:,0:input_dim]
+        X = inputs[ntrial,:,cols]
         Y = outputs[ntrial,:,0:output_dim]
     else:
         R = np.loadtxt("%s/%s" % (fdir, filename), delimiter=',')
-        X = R[:,0:input_dim]
+        X = R[:,cols]
         Y = R[:,input_dim:(input_dim + output_dim)]        
 
     likelihood = model.predict(X.reshape((1,-1,27)))[0]
