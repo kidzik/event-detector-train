@@ -41,7 +41,7 @@ def plot_history(history):
     plt.plot(range(nepoch),history.history['loss'],'r')
     plt.plot(range(nepoch),history.history['val_loss'],'b')
     axes = plt.gca()
-    axes.set_ylim([0.0015,0.005])
+    axes.set_ylim([0.001,0.005])
     plt.title('model loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
@@ -171,7 +171,7 @@ def peak_cmp(annotated, predicted):
         return -1
     
     for a in annotated:
-        if a > 122:
+        if a > 120:
             continue
         dist = dist + [min(np.abs(predicted - a))]
     return mean(dist)
@@ -203,15 +203,17 @@ def eval_prediction(likelihood, true, patient, plot = True, shift = 0):
 def plot_stats(sdist):
     plt.hist(sdist,50,[0, 100])
     filtered = [k for k in sdist if k >= 0]
-    ok5 = [k for k in filtered if k <= 5]
-    ok10 = [k for k in filtered if k <= 10]
-    ok60 = [k for k in filtered if k <= 60]
-    nel = float(len(filtered))
+    
+    def off_by(threshold, filtered):
+        ob = [k for k in filtered if k <= threshold]
+        nel = float(len(filtered))
+        print("<= %d: %f" % (threshold, len(ob) / float(nel)))
+        
     
     print("Error distribution:")
-    print("<= 5: %f" % (len(ok5) / float(nel)))
-    print("<= 10: %f" % (len(ok10) / float(nel)))
-    print("<= 60: %f" % (len(ok60) / float(nel)))
+    off_by(5, filtered)
+    off_by(10, filtered)
+    off_by(60, filtered)
     print("Mean distance: %f" % (np.mean(filtered)))
  
 def plot_kinematics(filename, fdir="", ids = None, fromfile=False, input_dim = 15, output_dim = 15, model = None, cols = cols):
@@ -224,7 +226,7 @@ def plot_kinematics(filename, fdir="", ids = None, fromfile=False, input_dim = 1
         X = R[:,cols]
         Y = R[:,input_dim:(input_dim + output_dim)]        
 
-    likelihood = model.predict(X.reshape((1,-1,27)))[0]
+    likelihood = model.predict(X.reshape((1,-1,len(cols))))[0]
 
     pylab.rcParams['figure.figsize'] = (5, 4)
     eval_prediction(likelihood, Y, filename)
