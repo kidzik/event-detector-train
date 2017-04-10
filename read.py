@@ -117,7 +117,7 @@ def extract_kinematics(leg, filename):
     arr = np.concatenate((curves, outputs), axis=1)
 
     print("Writig %s" % filename)
-    np.savetxt(output_file, arr, delimiter=',')
+    # np.savetxt(output_file, arr, delimiter=',')
 
 # Extract kinematics from all *.c3d files in c3d directory
 files = os.listdir(input_dir)

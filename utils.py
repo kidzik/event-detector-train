@@ -216,7 +216,7 @@ def plot_stats(sdist):
     off_by(60, filtered)
     print("Mean distance: %f" % (np.mean(filtered)))
  
-def plot_kinematics(filename, fdir="", ids = None, fromfile=False, input_dim = 15, output_dim = 15, model = None, cols = cols):
+def plot_kinematics(filename, fdir="", ids = None, fromfile=False, input_dim = 15, output_dim = 15, model = None, cols = None):
     if not fromfile:
         ntrial = ids.index(filename)
         X = inputs[ntrial,:,cols]
