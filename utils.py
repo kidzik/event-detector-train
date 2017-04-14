@@ -130,7 +130,6 @@ def load_data(fdir, input_dim, output_dim, nseqlen, nsamples = 100000):
 
     n = 0
     for i,filename in enumerate(files):
-        # print("Processing %s..." % (filename,))
         try:
             R = np.loadtxt("%s/%s" % (fdir, filename), delimiter=',')
         except:
@@ -139,7 +138,7 @@ def load_data(fdir, input_dim, output_dim, nseqlen, nsamples = 100000):
         # find first event
         positives1 = np.where(R[:,input_dim] > 0.5)
         positives2 = np.where(R[:,input_dim + 1] > 0.5)
-        if len(positives1) + len(positives2) == 0:
+        if len(positives1[0]) == 0 or len(positives2[0]) == 0:
             continue
         nstart = max(positives1[0][0], positives2[0][0])
         nstart = nstart - randint(15,nseqlen / 2)
@@ -155,8 +154,13 @@ def load_data(fdir, input_dim, output_dim, nseqlen, nsamples = 100000):
         if (not Y.any()):
             continue
 
+        if R[0,90] > R[R.shape[1]-1,90]:
+            cols = [ i for i in range(30,99) if (i % 3) == 0 or (i%3)==2]
+            X[:,cols] = -X[:,cols]
+        
         inputs[n,:,:] = X
         outputs[n,:,:] = Y.astype(int)[:,0:output_dim]
+        
         ids.append(filename)
         n = n + 1
         
@@ -171,10 +175,13 @@ def peak_cmp(annotated, predicted):
         return -1
     
     for a in annotated:
-        if a > 120:
-            continue
+#        if a > 120:
+#            continue
         dist = dist + [min(np.abs(predicted - a))]
-    return mean(dist)
+    if not len(dist):
+        return -1
+    return min(dist)
+
 
 def eval_prediction(likelihood, true, patient, plot = True, shift = 0):
     sdist = []
@@ -201,7 +208,7 @@ def eval_prediction(likelihood, true, patient, plot = True, shift = 0):
     return sdist
 
 def plot_stats(sdist):
-    plt.hist(sdist,50,[0, 100])
+    plt.hist(sdist,100,[0, 100])
     filtered = [k for k in sdist if k >= 0]
     
     def off_by(threshold, filtered):
@@ -211,6 +218,8 @@ def plot_stats(sdist):
         
     
     print("Error distribution:")
+    off_by(1, filtered)
+    off_by(3, filtered)
     off_by(5, filtered)
     off_by(10, filtered)
     off_by(60, filtered)

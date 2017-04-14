@@ -8,7 +8,7 @@ import re
 import os
 
 input_dir = "/media/lukasz/TOSHIBA EXT/tempdeidNEW/" 
-output_dir = "/media/lukasz/TOSHIBA EXT/csv/" 
+output_dir = "/media/lukasz/TOSHIBA EXT/csv-hee/" 
 
 def derivative(traj, nframes):
     traj_der = traj[1:nframes,:] - traj[0:(nframes-1),:]
@@ -18,7 +18,8 @@ def extract_kinematics(leg, filename):
     m = re.match(input_dir + "(?P<name>.+).c3d",filename)
     name = m.group('name').replace(" ","-")
     output_file = "%s/%s%s.csv" % (output_dir, leg, name)
-
+    print("Trying %s" % (filename))
+    
     # Open c3d and read data
     reader = btk.btkAcquisitionFileReader() 
     reader.SetFilename(filename)
@@ -27,8 +28,8 @@ def extract_kinematics(leg, filename):
     nframes = acq.GetPointFrameNumber()
     first_frame = acq.GetFirstFrame()
 
-    # if os.path.isfile(output_file):
-    #     return
+    if os.path.isfile(output_file):
+        return
 
     metadata = acq.GetMetaData()
 
@@ -38,7 +39,13 @@ def extract_kinematics(leg, filename):
 
     # We extract only kinematics
     kinematics = ["HipAngles", "KneeAngles", "AnkleAngles", "PelvisAngles", "FootProgressAngles"]
-    markers = ["ANK", "TOE", "KNE", "ASI"]
+    markers = ["ANK", "TOE", "KNE", "ASI", "HEE"]
+    
+    # Cols
+    # 2 * 5 * 3 = 30  kinematics
+    # 2 * 5 * 3 = 30  marker trajectories
+    # 2 * 5 * 3 = 30  marker trajectory derivatives
+    # 3 * 3 = 9       extra trajectories
 
     outputs = np.array([[0] * nframes, [0] * nframes]).T
     
@@ -61,27 +68,30 @@ def extract_kinematics(leg, filename):
         angles[i] = point.GetValues()
         point = acq.GetPoint(opposite[leg] + v)
         angles[len(kinematics) + i] = point.GetValues()
-        
+    
     # Get the pelvis
     LASI = acq.GetPoint("LASI").GetValues()
     RASI = acq.GetPoint("RASI").GetValues()
     midASI = (LASI + RASI) / 2
-    incrementX = 1 if midASI[100][0] > midASI[0][0] else -1
+    # incrementX = 1 if midASI[100][0] > midASI[0][0] else -1
 
     traj = [None] * (len(markers) * 4 + 3)
     for i, v in enumerate(markers):
-        traj[i] = acq.GetPoint(leg + v).GetValues() - midASI
-        traj[len(markers) + i] = acq.GetPoint(opposite[leg] + v).GetValues() - midASI
+        try:
+            traj[i] = acq.GetPoint(leg + v).GetValues() - midASI
+            traj[len(markers) + i] = acq.GetPoint(opposite[leg] + v).GetValues() - midASI
+        except:
+            return
 
-        traj[i][:,0] = traj[i][:,0] * incrementX
-        traj[len(markers) + i][:,0] = traj[len(markers) + i][:,0] * incrementX
-        traj[i][:,2] = traj[i][:,2] * incrementX
-        traj[len(markers) + i][:,2] = traj[len(markers) + i][:,2] * incrementX
+        traj[i][:,0] = traj[i][:,0] #* incrementX
+        traj[len(markers) + i][:,0] = traj[len(markers) + i][:,0] #* incrementX
+        traj[i][:,2] = traj[i][:,2] #* incrementX
+        traj[len(markers) + i][:,2] = traj[len(markers) + i][:,2] #* incrementX
 
     for i in range(len(markers)*2):
         traj[len(markers)*2 + i] = derivative(traj[i], nframes) 
         
-    midASI = midASI * incrementX
+    midASI = midASI #* incrementX
 
     midASIvel = derivative(midASI, nframes)
     midASIacc = derivative(midASIvel, nframes)
@@ -117,7 +127,7 @@ def extract_kinematics(leg, filename):
     arr = np.concatenate((curves, outputs), axis=1)
 
     print("Writig %s" % filename)
-    # np.savetxt(output_file, arr, delimiter=',')
+    np.savetxt(output_file, arr, delimiter=',')
 
 # Extract kinematics from all *.c3d files in c3d directory
 files = os.listdir(input_dir)
