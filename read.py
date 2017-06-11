@@ -7,8 +7,8 @@ import btk
 import re
 import os
 
-input_dir = "/media/lukasz/TOSHIBA EXT/tempdeidNEW/" 
-output_dir = "/media/lukasz/TOSHIBA EXT/csv-hee/" 
+input_dir = "/media/lukasz/DATA/tempdeidNEW/" 
+output_dir = "/media/lukasz/DATA/csv-hee/" 
 
 def derivative(traj, nframes):
     traj_der = traj[1:nframes,:] - traj[0:(nframes-1),:]
