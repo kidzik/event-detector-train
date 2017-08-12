@@ -1,5 +1,5 @@
 c3d
-csv
+*.csv
 *.c3d
 *~
 *.pyc
