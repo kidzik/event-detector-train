@@ -12,12 +12,13 @@ import re
 import os
 import keras
 from keras.models import load_model
+keras.losses.weighted_binary_crossentropy = weighted_binary_crossentropy
 
 def derivative(traj, nframes):
     traj_der = traj[1:nframes,:] - traj[0:(nframes-1),:]
     return np.append(traj_der, [[0,0,0]], axis=0)
 
-def extract_kinematics(leg, filename_in, filename_out):
+def extract_kinematics(leg, filename_in):
     print("Trying %s" % (filename_in))
     
     # Open c3d and read data
@@ -78,7 +79,8 @@ def extract_kinematics(leg, filename_in, filename_out):
             traj[i] = acq.GetPoint(leg + v).GetValues() - midASI
             traj[len(markers) + i] = acq.GetPoint(opposite[leg] + v).GetValues() - midASI
         except:
-            return
+             print "Error while reading marker data: %d, %s" % (i,v)
+             return
 
         traj[i][:,0] = traj[i][:,0] #* incrementX
         traj[len(markers) + i][:,0] = traj[len(markers) + i][:,0] #* incrementX
@@ -106,16 +108,17 @@ def extract_kinematics(leg, filename_in, filename_out):
     # Add events as output
     for event in btk.Iterate(acq.GetEvents()):
         if event.GetFrame() >= nframes:
-            print("Event happened to far")
+            print("Event happened too far")
             return
         if len(event.GetContext()) == 0:
             print("No events")
             return
-        if event.GetContext()[0] == leg:
-            if event.GetLabel() == "Foot Strike":
-                outputs[event.GetFrame() -first_frame, 0] = 1
-            elif event.GetLabel() == "Foot Off":
-                outputs[event.GetFrame() - first_frame, 1] = 1
+#        if event.GetContext()[0] == leg:
+        if event.GetLabel() == "Foot Strike":
+            outputs[event.GetFrame() -first_frame, 0] = 1
+        elif event.GetLabel() == "Foot Off":
+            outputs[event.GetFrame() - first_frame, 1] = 1
+        print(event.GetLabel(), event.GetContext(), event.GetFrame(), event.GetFrame() - first_frame)
             
     if (np.sum(outputs) == 0):
         print("No events in %s!" % (filename,))
@@ -123,12 +126,13 @@ def extract_kinematics(leg, filename_in, filename_out):
 
     arr = np.concatenate((curves, outputs), axis=1)
 
-    print("Writig %s" % filename_out)
-    np.savetxt(filename_out, arr, delimiter=',')
+    return arr
+#    print("Writig %s" % filename_out)
+#    np.savetxt(filename_out, arr, delimiter=',')
 
 parser = argparse.ArgumentParser(description='Annotate heel strike (HS) and foot off (FO) events.')
-parser.add_argument('event', metavar='event', help="Type of the event to predict: heel strike (HS) or foot-off (FO)", type=str, choices=['HS','FO'])
-parser.add_argument('filename', metavar='filename', help="A c3d file with kinematics", type=str)
+parser.add_argument('filename_in', metavar='filename_in', help="A c3d file with kinematics", type=str)
+parser.add_argument('filename_out', metavar='filename_out', help="A c3d file to extract events to", type=str, default="out.c3d")
 
 # parser.add_argument('--method', '-m',
 #                     help="",
@@ -176,22 +180,59 @@ def convert_data(data):
 
     return X, Y
 
-extract_kinematics('L', args.filename, "tmp.csv")
-
-def neural_method(inputs):
-    keras.losses.weighted_binary_crossentropy = weighted_binary_crossentropy
-    model = load_model("models/%s.h5" % args.event)
+def neural_method(inputs, model):
     cols = range(15) + [15 + i for i in range(13)] + [30 + i for i in range(6)] 
     res = model.predict(inputs[:,cols].reshape((1,inputs.shape[0],len(cols))))
     peakind = peakdet(res[0], 0.7)
-    print ', '.join(map(str, [k for k,v in peakind[0]]))
+    frames = map(int, [k for k,v in peakind[0]])
+    return frames
 
-inputs = np.loadtxt("tmp.csv", delimiter=',')
+modelFO = load_model("models/FO.h5")
+modelHS = load_model("models/HS.h5")
+
 idxL = [(i / 3) * 3 + i  for i in range(30)]
 idxR = [3 + (i / 3) * 3 + i  for i in range(30)]
+
+inputs = extract_kinematics('L', args.filename_in)
 inputsL = inputs[:, idxL]
 inputsR = inputs[:, idxR]
 XL, YL = convert_data(inputsL)
 XR, YR = convert_data(inputsR)
 
-neural_method(XL)
+events = {}
+events[("Foot Strike","Left")] = neural_method(XR, modelFO)
+events[("Foot Strike","Right")] = neural_method(XL, modelFO)
+events[("Foot Off","Left")] = neural_method(XR, modelHS)
+events[("Foot Off","Right")] = neural_method(XL, modelHS)
+
+def save(events, filename_in, filename_out):
+    print (events, filename_in, filename_out)
+    reader = btk.btkAcquisitionFileReader() 
+    reader.SetFilename(filename_in)
+    reader.Update()
+    acq = reader.GetOutput()
+    first_frame = acq.GetFirstFrame()
+    acq.ClearEvents()
+    print(first_frame)
+
+    for k,v in events.items():
+        for frame in v:
+            frame_true = first_frame + frame
+            fps = 120.0
+            event = btk.btkEvent()
+            event.SetLabel(k[0])
+            event.SetContext(k[1])
+            event.SetId(2 - (k[0] == "Foot Strike"))
+            event.SetFrame(np.round(frame_true))
+            event.SetTime(frame_true/fps)
+            acq.AppendEvent(event)
+    
+    writer = btk.btkAcquisitionFileWriter() 
+    writer.SetInput(acq)
+    writer.SetFilename(filename_out)
+    writer.Update()
+
+    return
+
+save(events, args.filename_in, args.filename_out)
+    
