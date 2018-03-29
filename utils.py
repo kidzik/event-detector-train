@@ -19,7 +19,7 @@ from scipy import signal
 
 import sys
 from numpy import NaN, Inf, arange, isscalar, asarray, array
-
+import pylab
 
 # Build the model
 def construct_model(hidden = 32, lstm_layers = 2, input_dim = 15, output_dim = 1):
