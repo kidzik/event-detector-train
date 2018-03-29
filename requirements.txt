@@ -1,0 +1,4 @@
+h5py
+numpy>=1.13
+tensorflow
+keras>=2.0.6
