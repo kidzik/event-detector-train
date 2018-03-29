@@ -192,24 +192,24 @@ def load_data(fdir, input_dim, output_dim, nseqlen, nsamples = 100000):
 
 def peak_cmp(annotated, predicted):
     dist = []
+    predicted = [k for k in predicted if (k >= 10 and k < 128-10)]
+    annotated = [k for k in annotated if (k >= 10 and k < 128-10)]
+    
+    if (len(predicted) != len(annotated)):
+        return -1
     if len(predicted) == 0 or len(annotated) == 0:
-        return -1
-    if len(predicted) != len(annotated):
-        return -1
+        return 0
     
     for a in annotated:
-#        if a > 120:
-#            continue
         dist = dist + [min(np.abs(predicted - a))]
-    if not len(dist):
+    if not len(dist) or (min(dist) > 30):
         return -1
     return min(dist)
 
-
-def eval_prediction(likelihood, true, patient, plot = True, shift = 0):
+def eval_prediction(likelihood, true, patient, plot = True, shift = 0, thresh = 0.5):
     sdist = []
     
-    peakind = peakdet(likelihood[:,0],0.5)
+    peakind = peakdet(likelihood[:,0], thresh)
     for k,v in peakind[0]:
         if plot:
             plt.axvline(x=k)
@@ -221,7 +221,7 @@ def eval_prediction(likelihood, true, patient, plot = True, shift = 0):
 #            plt.axvline(x=k)
 #    sdist.append(peak_cmp(np.where(true[:,1] > 0.5)[0], [k for k,v in peakind[0]]))
 
-    if plot:
+    if plot and sdist[0] == -1:
         plt.plot(likelihood) # continous likelihood process
         plt.plot(true) # spikes on events
         plt.title(patient)
@@ -238,7 +238,6 @@ def plot_stats(sdist):
         ob = [k for k in filtered if k <= threshold]
         nel = float(len(filtered))
         print("<= %d: %f" % (threshold, len(ob) / float(nel)))
-        
     
     print("Error distribution:")
     off_by(1, filtered)
@@ -247,6 +246,18 @@ def plot_stats(sdist):
     off_by(10, filtered)
     off_by(60, filtered)
     print("Mean distance: %f" % (np.mean(filtered)))
+    
+def plot_stats_step(sdist,name=""):
+    plt.hist(sdist,bins=np.arange(16) - 0.5,range=(0,15),
+             alpha=0.5,normed=True,label=name,
+             cumulative=True, histtype='step', stacked=True,)
+
+    filtered = [k for k in sdist if (k >= 0 and k <= 30)]
+    
+    def off_by(threshold, filtered):
+        ob = [k for k in filtered if k <= threshold]
+        nel = float(len(filtered))
+        print("<= %d: %f" % (threshold, len(ob) / float(nel))) 
  
 def plot_kinematics(filename, fdir="", ids = None, fromfile=False, input_dim = 15, output_dim = 15, model = None, cols = None):
     if not fromfile:

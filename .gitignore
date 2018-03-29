@@ -3,7 +3,7 @@ c3d
 *.c3d
 *~
 *.pyc
-
+*.png
 *.pdf
 *.out
 *.log
