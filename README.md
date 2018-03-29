@@ -15,7 +15,7 @@
 ## Extra
 
 Python notebook for training models interactively (with extended comments):
-https://github.com/kidzik/event-detector/blob/master/Training.ipynb
+https://github.com/kidzik/event-detector-train/blob/master/Training.ipynb
 
 Implementation of heursitic based methods:
-https://github.com/kidzik/event-detector/blob/master/heuristics.py
+https://github.com/kidzik/event-detector-train/blob/master/heuristics.py
