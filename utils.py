@@ -31,10 +31,9 @@ def construct_model(hidden = 32, lstm_layers = 2, input_dim = 15, output_dim = 1
     model.compile(loss=weighted_binary_crossentropy, optimizer='adam', metrics=['accuracy'])
     return model
 
+# put roughly 100x higher weight on events (as they happen every ~100 frame)
 def weighted_binary_crossentropy(y_true, y_pred):
     a1 = K.mean(np.multiply(K.binary_crossentropy(y_pred[0:1,:], y_true[0:1,:]),(y_true[0:1,:] + 0.01)), axis=-1)
-#    a2 = K.mean(np.multiply(K.binary_crossentropy(y_pred[1:2,:], y_true[1:2,:]),(y_true[1:2,:] + 0.01)), axis=-1)
-#    a1 = K.mean(np.multiply(K.binary_crossentropy(y_pred, y_true),(y_true + 0.01)), axis=-1)
     return a1 #+ a2
 
 # Build the model
@@ -47,6 +46,7 @@ def construct_model(hidden = 32, lstm_layers = 2, input_dim = 15, output_dim = 2
     model.compile(loss=weighted_binary_crossentropy, optimizer='adam', metrics=['accuracy'])
     return model
 
+# Shortcut for plotting history from model.fit
 def plot_history(history):
     nepoch = len(history.history['loss'])
     plt.plot(range(nepoch),history.history['loss'],'r')
@@ -59,7 +59,6 @@ def plot_history(history):
     plt.legend(['train', 'validation'], loc='upper right')
     plt.show()
     
-
 def peakdet(v, delta, x = None):
     """
     Converted from MATLAB script at http://billauer.co.il/peakdet.html
@@ -131,6 +130,8 @@ def peakdet(v, delta, x = None):
 
     return array(maxtab), array(mintab)
 
+# Load CSV file with kinematics and markers. Interpret last columns as outcome 
+# nseqlen defines the length of the LSTM window
 def load_file(filename, input_dim, output_dim, nseqlen = 128):
     try:
         R = np.loadtxt(filename, delimiter=',')
@@ -162,7 +163,7 @@ def load_file(filename, input_dim, output_dim, nseqlen = 128):
 
     return X, Y.astype(int)[:,0:output_dim]
     
-
+## Load all files from a given directory
 def load_data(fdir, input_dim, output_dim, nseqlen, nsamples = 100000):
     files = os.listdir(fdir)
 
@@ -190,6 +191,7 @@ def load_data(fdir, input_dim, output_dim, nseqlen, nsamples = 100000):
     
     return inputs[0:n,:,:], outputs[0:n,:,:], ids
 
+# Compare if peaks are close to each other (correct detection)
 def peak_cmp(annotated, predicted):
     dist = []
     predicted = [k for k in predicted if (k >= 10 and k < 128-10)]
@@ -206,6 +208,7 @@ def peak_cmp(annotated, predicted):
         return -1
     return min(dist)
 
+# Threshold the likelihood vector and compare prediction with the true data
 def eval_prediction(likelihood, true, patient, plot = True, shift = 0, thresh = 0.5):
     sdist = []
     
@@ -230,6 +233,7 @@ def eval_prediction(likelihood, true, patient, plot = True, shift = 0, thresh = 
         plt.show()
     return sdist
 
+# Print stats of predictions and plot a histogram
 def plot_stats(sdist):
     plt.hist(sdist,100,[0, 100])
     filtered = [k for k in sdist if k >= 0]
@@ -246,7 +250,8 @@ def plot_stats(sdist):
     off_by(10, filtered)
     off_by(60, filtered)
     print("Mean distance: %f" % (np.mean(filtered)))
-    
+
+# Print stats of predictions and plot a cumulative histogram
 def plot_stats_step(sdist,name=""):
     plt.hist(sdist,bins=np.arange(16) - 0.5,range=(0,15),
              alpha=0.5,normed=True,label=name,
@@ -258,7 +263,8 @@ def plot_stats_step(sdist,name=""):
         ob = [k for k in filtered if k <= threshold]
         nel = float(len(filtered))
         print("<= %d: %f" % (threshold, len(ob) / float(nel))) 
- 
+
+# Visualize kinematics (used to better understand misclassified patterns)
 def plot_kinematics(filename, fdir="", ids = None, fromfile=False, input_dim = 15, output_dim = 15, model = None, cols = None):
     if not fromfile:
         ntrial = ids.index(filename)
@@ -282,8 +288,6 @@ def plot_kinematics(filename, fdir="", ids = None, fromfile=False, input_dim = 1
         ax.set_xlim([0,X.shape[0]])
         for x in np.where(Y[:,0] > 0.5)[0]:
             plt.axvline(x=x, color='g', linewidth=2)
-#        for x in np.where(Y[:,1] > 0.5)[0]:
-#            plt.axvline(x=x,color="r")
 
     plt.show()
 
