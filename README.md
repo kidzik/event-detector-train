@@ -28,4 +28,4 @@ https://github.com/kidzik/event-detector-train/blob/master/heuristics.py
 
 ## Credits 
 
-This research was sponsored by the Mobilize Center, a National Institutes of Health Big Data to Knowledge (BD2K) Center of Excellence supported through Grant U54EB020405. The model is trained on the data from Gillette Children's Specialty Healthcare, in accordance with the data sharing agreement. For the training scripts refer to https://github.com/kidzik/event-detector-train
+This research was sponsored by the Mobilize Center, a National Institutes of Health Big Data to Knowledge (BD2K) Center of Excellence supported through Grant U54EB020405. The model is trained on the data from Gillette Children's Specialty Healthcare, in accordance with the data sharing agreement.
