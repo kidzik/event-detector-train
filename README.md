@@ -8,11 +8,13 @@ This repository contains the training code. If you want to use pretrained versio
 
 ## Workflow
 
-1. Convert c3d to csv with frames as rows and markers/joint angles as columns
-2. Run training with different hyperparameters
+This repository contains three key procedures:
+
+1. Convert `.c3d` to `.csv` with frames as rows and markers/joint angles as columns
+2. Train with different hyperparameters
 3. Compare the best models with existing marker-based models
 
-## Code
+These procedures are implemented in the following files respectively:
 
 1. load.py
 2. experiments.py
