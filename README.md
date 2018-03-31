@@ -1,8 +1,6 @@
-# event-detector
+# event-detector-train
 
 This software annotates `.c3d` gait trajectories with Heel-Strike and Foot-Off events. It uses neural networks (more precisely Long Short Term Memory networks) through `keras` and `tensorflow` packages.
-
-## Deployed package
 
 This repository contains the training code. If you want to use pretrained version for your data refer to https://github.com/kidzik/event-detector
 
@@ -28,3 +26,6 @@ https://github.com/kidzik/event-detector-train/blob/master/Training.ipynb
 Implementation of heursitic based methods:
 https://github.com/kidzik/event-detector-train/blob/master/heuristics.py
 
+## Credits 
+
+This research was sponsored by the Mobilize Center, a National Institutes of Health Big Data to Knowledge (BD2K) Center of Excellence supported through Grant U54EB020405. The model is trained on the data from Gillette Children's Specialty Healthcare, in accordance with the data sharing agreement. For the training scripts refer to https://github.com/kidzik/event-detector-train
